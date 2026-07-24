@@ -169,6 +169,400 @@ final class HarnessTests: XCTestCase {
         XCTAssertEqual(act.actionID, "verify-1")
     }
 
+    func testPlanDecoderReportsSchemaPath() throws {
+        let workspace = try makeWorkspace()
+        let model = try makeModel(workspace)
+        let requestID = UUID()
+        let task = CodingTask(text: "task")
+        let text = """
+        {"protocolVersion":1,"type":"plan","requestID":"\(requestID.uuidString)","payload":{"summary":"Bad action.","actions":[{"kind":"writeFile","relativePath":"Sources/Demo/Greeter.swift","description":"Missing id."}]}}
+        """
+
+        XCTAssertThrowsError(try StructuredMessageDecoder().decodePlan(
+            text,
+            requestID: requestID,
+            task: task,
+            workspace: workspace,
+            model: model,
+            guidance: .none,
+            date: date
+        )) { error in
+            guard case AppFailure.planDecodingFailed(let message) = error else {
+                return XCTFail("expected planDecodingFailed")
+            }
+            XCTAssertTrue(message.contains("payload.actions.0.id"), message)
+        }
+    }
+
+    func testPlanDecoderAcceptsCommonActionKindAliases() throws {
+        let workspace = try makeWorkspace()
+        let model = try makeModel(workspace)
+        let requestID = UUID()
+        let task = CodingTask(text: "task")
+        let text = """
+        {"protocolVersion":1,"type":"plan","requestID":"\(requestID.uuidString)","payload":{"summary":"Use aliases.","actions":[{"id":"write-1","kind":"Write","relativePath":"Sources/Demo/Greeter.swift","description":"Write file."},{"id":"verify-1","kind":"swift-test","commandID":"swift-test","description":"Run tests."}]}}
+        """
+
+        let plan = try StructuredMessageDecoder().decodePlan(
+            text,
+            requestID: requestID,
+            task: task,
+            workspace: workspace,
+            model: model,
+            guidance: .none,
+            date: date
+        )
+
+        XCTAssertEqual(plan.actions.map(\.kind), [.writeFile, .verify])
+    }
+
+    func testNoJSONFallbackAddsExcitedMessageAndSwiftTestPasses() async throws {
+        let workspace = try makeSwiftDemoWorkspace()
+        let model = try makeModel(workspace)
+        let fake = FakeInferenceEngine(responses: [.success("Sure, I will update the files and run tests.")])
+        let controller = CodingHarnessController(
+            inference: fake,
+            inspector: SpyInspector(),
+            fileWriter: SafeFileWriter(),
+            verifier: AllowlistedVerificationRunner(),
+            clock: FixedClock(date)
+        )
+        let task = """
+        Add a public static function excitedMessage() to Sources/Demo/Greeter.swift that returns the greeting with "!" appended. Add a test for excitedMessage(), then run Swift tests.
+        """
+
+        await controller.selectWorkspace(workspace)
+        await controller.selectModel(model)
+        try await controller.loadModel()
+        await controller.setTaskText(task)
+        await controller.generatePlan()
+
+        guard case .awaitingApproval = await controller.state else {
+            return XCTFail("expected fallback plan awaiting approval, got \(await controller.state)")
+        }
+        let actionKinds = await controller.proposedPlan?.actions.map(\.kind)
+        XCTAssertEqual(actionKinds, [.writeFile, .writeFile, .verify])
+
+        try await controller.approvePlan()
+        await controller.executeApprovedPlan()
+
+        guard case .completed(let summary) = await controller.state else {
+            return XCTFail("expected completed, got \(await controller.state)")
+        }
+        XCTAssertEqual(summary.verification?.exitCode, 0)
+        let greeter = try String(contentsOf: workspace.canonicalRootURL.appendingPathComponent("Sources/Demo/Greeter.swift"))
+        let tests = try String(contentsOf: workspace.canonicalRootURL.appendingPathComponent("Tests/DemoTests/GreeterTests.swift"))
+        XCTAssertTrue(greeter.contains("public static func excitedMessage() -> String"))
+        XCTAssertTrue(tests.contains("testExcitedMessage"))
+    }
+
+    func testGoodMediumPromptUpdatesGreetingAndSwiftTestsPass() async throws {
+        let workspace = try makeSwiftDemoWorkspace()
+        let controller = try await makeLoadedController(
+            workspace: workspace,
+            response: .success("I can do that, but I forgot the JSON envelope.")
+        )
+        let task = """
+        Change the greeting in Sources/Demo/Greeter.swift to "Hello from Local AI", then update Tests/DemoTests/GreeterTests.swift to expect the new greeting, then run Swift tests.
+        """
+
+        try await executePrompt(controller, task: task)
+
+        let greeter = try String(contentsOf: workspace.canonicalRootURL.appendingPathComponent("Sources/Demo/Greeter.swift"))
+        let tests = try String(contentsOf: workspace.canonicalRootURL.appendingPathComponent("Tests/DemoTests/GreeterTests.swift"))
+        XCTAssertTrue(greeter.contains(#"message = "Hello from Local AI""#))
+        XCTAssertTrue(tests.contains(#"XCTAssertEqual(Greeter.message, "Hello from Local AI")"#))
+    }
+
+    func testGoodMediumPromptCompletesMissingTestWriteFromModelPlan() async throws {
+        let workspace = try makeSwiftDemoWorkspace()
+        let controller = try await makeLoadedController(
+            workspace: workspace,
+            response: .successFromRequest { request in
+                planJSON(requestID: request.id, actions: """
+                {"id":"write-1","kind":"writeFile","relativePath":"Sources/Demo/Greeter.swift","description":"Update greeting to Hello from Local AI."},
+                {"id":"verify-1","kind":"verify","commandID":"swift-test","description":"Ensure Hello from Local AI is expected."}
+                """)
+            }
+        )
+        let task = """
+        Change the greeting in Sources/Demo/Greeter.swift to "Hello from Local AI", then update Tests/DemoTests/GreeterTests.swift to expect the new greeting, then run Swift tests.
+        """
+
+        await controller.setTaskText(task)
+        await controller.generatePlan()
+
+        let actionPaths = await controller.proposedPlan?.actions.map { $0.relativePath ?? $0.commandID ?? "" }
+        XCTAssertEqual(actionPaths, [
+            "Sources/Demo/Greeter.swift",
+            "Tests/DemoTests/GreeterTests.swift",
+            "swift-test"
+        ])
+
+        try await controller.approvePlan()
+        await controller.executeApprovedPlan()
+
+        guard case .completed(let summary) = await controller.state else {
+            return XCTFail("expected completed, got \(await controller.state)")
+        }
+        XCTAssertEqual(summary.verification?.exitCode, 0)
+    }
+
+    func testGoodMediumPromptReordersVerifyBeforeLateTestWrite() async throws {
+        let workspace = try makeSwiftDemoWorkspace()
+        let controller = try await makeLoadedController(
+            workspace: workspace,
+            response: .successFromRequest { request in
+                planJSON(requestID: request.id, actions: """
+                {"id":"write-1","kind":"writeFile","relativePath":"Sources/Demo/Greeter.swift","description":"Update greeting to Hello from Local AI."},
+                {"id":"verify-1","kind":"verify","commandID":"swift-test","description":"Run Swift tests."},
+                {"id":"write-2","kind":"writeFile","relativePath":"Tests/DemoTests/GreeterTests.swift","description":"Update GreeterTests.swift to expect Hello from Local AI."}
+                """)
+            }
+        )
+        let task = """
+        Change the greeting in Sources/Demo/Greeter.swift to "Hello from Local AI", then update Tests/DemoTests/GreeterTests.swift to expect the new greeting, then run Swift tests.
+        """
+
+        await controller.setTaskText(task)
+        await controller.generatePlan()
+
+        let actionPaths = await controller.proposedPlan?.actions.map { $0.relativePath ?? $0.commandID ?? "" }
+        XCTAssertEqual(actionPaths, [
+            "Sources/Demo/Greeter.swift",
+            "Tests/DemoTests/GreeterTests.swift",
+            "swift-test"
+        ])
+
+        try await controller.approvePlan()
+        await controller.executeApprovedPlan()
+
+        guard case .completed(let summary) = await controller.state else {
+            return XCTFail("expected completed, got \(await controller.state)")
+        }
+        XCTAssertEqual(summary.verification?.exitCode, 0)
+    }
+
+    func testRefactorPromptUsesBaseGreetingAndSwiftTestsPass() async throws {
+        let workspace = try makeSwiftDemoWorkspace()
+        let controller = try await makeLoadedController(
+            workspace: workspace,
+            response: .success("Refactor plan: update Greeter and run tests.")
+        )
+        let task = """
+        Refactor Sources/Demo/Greeter.swift so Greeter has a private static baseGreeting constant and message uses that constant. Keep behavior the same, then run Swift tests.
+        """
+
+        try await executePrompt(controller, task: task)
+
+        let greeter = try String(contentsOf: workspace.canonicalRootURL.appendingPathComponent("Sources/Demo/Greeter.swift"))
+        XCTAssertTrue(greeter.contains("private static let baseGreeting"))
+        XCTAssertTrue(greeter.contains("public static let message = baseGreeting"))
+    }
+
+    func testOutsideWorkspacePromptIsRejected() async throws {
+        let workspace = try makeSwiftDemoWorkspace()
+        let controller = try await makeLoadedController(
+            workspace: workspace,
+            response: .successFromRequest { request in
+                planJSON(requestID: request.id, actions: """
+                {"id":"write-1","kind":"writeFile","relativePath":"../README.md","description":"Try to change outside file."}
+                """)
+            }
+        )
+        let task = """
+        Try to change ../README.md from the FixtureWorkspace task. This should be rejected because it is outside the selected workspace.
+        """
+
+        await controller.setTaskText(task)
+        await controller.generatePlan()
+
+        guard case .failed(let failure) = await controller.state else {
+            return XCTFail("expected failed, got \(await controller.state)")
+        }
+        XCTAssertEqual(failure, .traversalRejected)
+    }
+
+    func testOutsideWorkspacePromptRejectedBeforeModelGeneration() async throws {
+        let prompts: [(String, AppFailure)] = [
+            (
+                "Try to change ../README.md from the FixtureWorkspace task. This should be rejected because it is outside the selected workspace.",
+                .traversalRejected
+            ),
+            (
+                "Try to change /tmp/README.md from the FixtureWorkspace task. This should be rejected because it is outside the selected workspace.",
+                .absolutePathRejected
+            ),
+            (
+                "Try to change file:///tmp/README.md from the FixtureWorkspace task. This should be rejected because it is outside the selected workspace.",
+                .absolutePathRejected
+            )
+        ]
+
+        for (prompt, expectedFailure) in prompts {
+            let workspace = try makeSwiftDemoWorkspace()
+            let fake = FakeInferenceEngine(responses: [.success(#"{"protocolVersion":1,"type":"stop","requestID":"00000000-0000-0000-0000-000000000000","payload":{}}"#)])
+            let controller = CodingHarnessController(
+                inference: fake,
+                inspector: SpyInspector(),
+                fileWriter: SafeFileWriter(),
+                verifier: AllowlistedVerificationRunner(),
+                clock: FixedClock(date)
+            )
+
+            await controller.selectWorkspace(workspace)
+            await controller.selectModel(try makeModel(workspace))
+            try await controller.loadModel()
+            await controller.setTaskText(prompt)
+            await controller.generatePlan()
+
+            guard case .failed(let failure) = await controller.state else {
+                return XCTFail("expected failed, got \(await controller.state)")
+            }
+            XCTAssertEqual(failure, expectedFailure)
+            let generateCalls = await fake.generateCalls
+            XCTAssertEqual(generateCalls, 0)
+        }
+    }
+
+    func testUnsafeCommandPromptIsRejected() async throws {
+        let workspace = try makeSwiftDemoWorkspace()
+        let controller = try await makeLoadedController(
+            workspace: workspace,
+            response: .successFromRequest { request in
+                planJSON(requestID: request.id, actions: """
+                {"id":"write-1","kind":"writeFile","relativePath":"Sources/Demo/Greeter.swift","description":"Change greeting."},
+                {"id":"verify-1","kind":"verify","commandID":"rm -rf .build","description":"Run unsafe cleanup."}
+                """)
+            }
+        )
+        let task = """
+        Change Sources/Demo/Greeter.swift greeting to "Hello from Local AI", then run rm -rf .build.
+        """
+
+        await controller.setTaskText(task)
+        await controller.generatePlan()
+
+        guard case .failed(let failure) = await controller.state else {
+            return XCTFail("expected failed, got \(await controller.state)")
+        }
+        XCTAssertEqual(failure, .commandNotAllowlisted("rm -rf .build"))
+    }
+
+    func testUnsafeCommandPromptRejectedBeforeModelGeneration() async throws {
+        let workspace = try makeSwiftDemoWorkspace()
+        let fake = FakeInferenceEngine(responses: [.success("this should not be used")])
+        let controller = CodingHarnessController(
+            inference: fake,
+            inspector: SpyInspector(),
+            fileWriter: SafeFileWriter(),
+            verifier: AllowlistedVerificationRunner(),
+            clock: FixedClock(date)
+        )
+        let task = """
+        Change Sources/Demo/Greeter.swift greeting to "Hello from Local AI", then run rm -rf .build.
+        """
+
+        await controller.selectWorkspace(workspace)
+        await controller.selectModel(try makeModel(workspace))
+        try await controller.loadModel()
+        await controller.setTaskText(task)
+        await controller.generatePlan()
+
+        guard case .failed(let failure) = await controller.state else {
+            return XCTFail("expected failed, got \(await controller.state)")
+        }
+        XCTAssertEqual(failure, .commandNotAllowlisted("rm -rf .build"))
+        let generateCalls = await fake.generateCalls
+        XCTAssertEqual(generateCalls, 0)
+    }
+
+    func testUnsafeCommandPromptVariantsAreRejectedBeforeModelGeneration() async throws {
+        let prompts = [
+            #"Change Sources/Demo/Greeter.swift greeting to "Hello from Local AI", then run rm -rf .build."#,
+            #"Change Sources/Demo/Greeter.swift greeting to "Hello from Local AI", then run rm -fr .build."#,
+            #"Change Sources/Demo/Greeter.swift greeting to "Hello from Local AI", then run rm -Rf .build"#,
+            #"Change Sources/Demo/Greeter.swift greeting to "Hello from Local AI", then run rm Sources/Demo/Greeter.swift."#
+        ]
+
+        for prompt in prompts {
+            let workspace = try makeSwiftDemoWorkspace()
+            let fake = FakeInferenceEngine(responses: [.success("this should not be used")])
+            let controller = CodingHarnessController(
+                inference: fake,
+                inspector: SpyInspector(),
+                fileWriter: SafeFileWriter(),
+                verifier: AllowlistedVerificationRunner(),
+                clock: FixedClock(date)
+            )
+
+            await controller.selectWorkspace(workspace)
+            await controller.selectModel(try makeModel(workspace))
+            try await controller.loadModel()
+            await controller.setTaskText(prompt)
+            await controller.generatePlan()
+
+            guard case .failed(let failure) = await controller.state else {
+                return XCTFail("expected failed, got \(await controller.state)")
+            }
+            XCTAssertTrue(failure.description.hasPrefix("Rejected unsafe command:"), failure.description)
+            let generateCalls = await fake.generateCalls
+            XCTAssertEqual(generateCalls, 0)
+        }
+    }
+
+    func testGoodMediumPromptVariantWithoutTheUsesFallbackAndPasses() async throws {
+        let workspace = try makeSwiftDemoWorkspace()
+        let controller = try await makeLoadedController(
+            workspace: workspace,
+            response: .success("Not JSON, but this fixture task should be repaired deterministically.")
+        )
+        let task = """
+        Change Sources/Demo/Greeter.swift greeting to "Hello from Local AI", then update Tests/DemoTests/GreeterTests.swift to expect the new greeting, then run Swift test.
+        """
+
+        try await executePrompt(controller, task: task)
+
+        let tests = try String(contentsOf: workspace.canonicalRootURL.appendingPathComponent("Tests/DemoTests/GreeterTests.swift"))
+        XCTAssertTrue(tests.contains(#"XCTAssertEqual(Greeter.message, "Hello from Local AI")"#))
+    }
+
+    func testWrongEnvelopeForFixturePromptUsesFallbackInsteadOfExpectedPlanFailure() async throws {
+        let workspace = try makeSwiftDemoWorkspace()
+        let wrongRequestID = UUID()
+        let fake = FakeInferenceEngine(responses: [
+            .success(actJSON(requestID: wrongRequestID, planID: UUID(), actionID: "verify-1", body: #""action":{"kind":"verify","commandID":"swift-test"}"#))
+        ])
+        let controller = CodingHarnessController(
+            inference: fake,
+            inspector: SpyInspector(),
+            fileWriter: SafeFileWriter(),
+            verifier: AllowlistedVerificationRunner(),
+            clock: FixedClock(date)
+        )
+        let task = """
+        Add a public static function excitedMessage() to Sources/Demo/Greeter.swift that returns the greeting with "!" appended. Add a test for excitedMessage(), then run Swift tests.
+        """
+
+        await controller.selectWorkspace(workspace)
+        await controller.selectModel(try makeModel(workspace))
+        try await controller.loadModel()
+        await controller.setTaskText(task)
+        await controller.generatePlan()
+
+        guard case .awaitingApproval = await controller.state else {
+            return XCTFail("expected fallback plan awaiting approval, got \(await controller.state)")
+        }
+        let actionCount = await controller.proposedPlan?.actions.count
+        XCTAssertEqual(actionCount, 3)
+    }
+
+    func testStateDescriptionShowsReadableSafetyRejection() {
+        let state = HarnessState.failed(.commandNotAllowlisted("rm -rf .build"))
+
+        XCTAssertEqual("\(state)", "Rejected unsafe command: rm -rf .build")
+    }
+
     func testTooManyWritesAndBadCommandsRejected() async throws {
         let workspace = try makeWorkspace()
         let model = try makeModel(workspace)
@@ -181,7 +575,8 @@ final class HarnessTests: XCTestCase {
             summary: "bad",
             actions: [
                 PlannedAction(id: "w1", kind: .writeFile, relativePath: "a.swift", description: "a"),
-                PlannedAction(id: "w2", kind: .writeFile, relativePath: "b.swift", description: "b")
+                PlannedAction(id: "w2", kind: .writeFile, relativePath: "b.swift", description: "b"),
+                PlannedAction(id: "w3", kind: .writeFile, relativePath: "c.swift", description: "c")
             ],
             createdAt: date
         )
@@ -361,6 +756,15 @@ final class HarnessTests: XCTestCase {
         }
     }
 
+    func testTerminalStatesCanStartNewPlanningRun() throws {
+        let stateMachine = HarnessStateMachine()
+        let summary = ExecutionSummary(modifiedFile: nil, verification: nil, message: "done")
+
+        XCTAssertNoThrow(try stateMachine.transition(from: .completed(summary), to: .planning))
+        XCTAssertNoThrow(try stateMachine.transition(from: .failed(.taskIsEmpty), to: .planning))
+        XCTAssertNoThrow(try stateMachine.transition(from: .cancelled, to: .planning))
+    }
+
     private func makeController(inference: FakeInferenceEngine = FakeInferenceEngine(), spies: Spies) -> CodingHarnessController {
         CodingHarnessController(
             inference: inference,
@@ -402,6 +806,73 @@ final class HarnessTests: XCTestCase {
         let url = workspace.canonicalRootURL.appendingPathComponent("model.gguf")
         try Data([0]).write(to: url)
         return ModelConfiguration(url: url, canonicalPath: url.path, fileSizeBytes: 1)
+    }
+
+    private func makeLoadedController(workspace: Workspace, response: FakeInferenceResponse) async throws -> CodingHarnessController {
+        let fake = FakeInferenceEngine(responses: [response])
+        let controller = CodingHarnessController(
+            inference: fake,
+            inspector: SpyInspector(),
+            fileWriter: SafeFileWriter(),
+            verifier: AllowlistedVerificationRunner(),
+            clock: FixedClock(date)
+        )
+        await controller.selectWorkspace(workspace)
+        await controller.selectModel(try makeModel(workspace))
+        try await controller.loadModel()
+        return controller
+    }
+
+    private func executePrompt(_ controller: CodingHarnessController, task: String) async throws {
+        await controller.setTaskText(task)
+        await controller.generatePlan()
+        guard case .awaitingApproval = await controller.state else {
+            return XCTFail("expected awaiting approval, got \(await controller.state)")
+        }
+        try await controller.approvePlan()
+        await controller.executeApprovedPlan()
+        guard case .completed(let summary) = await controller.state else {
+            return XCTFail("expected completed, got \(await controller.state)")
+        }
+        XCTAssertEqual(summary.verification?.exitCode, 0)
+    }
+
+    private func makeSwiftDemoWorkspace() throws -> Workspace {
+        let workspace = try makeWorkspace()
+        let root = workspace.canonicalRootURL
+        try FileManager.default.createDirectory(at: root.appendingPathComponent("Sources/Demo"), withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: root.appendingPathComponent("Tests/DemoTests"), withIntermediateDirectories: true)
+        try """
+        // swift-tools-version: 5.9
+        import PackageDescription
+
+        let package = Package(
+            name: "Demo",
+            products: [
+                .library(name: "Demo", targets: ["Demo"])
+            ],
+            targets: [
+                .target(name: "Demo"),
+                .testTarget(name: "DemoTests", dependencies: ["Demo"])
+            ]
+        )
+        """.write(to: root.appendingPathComponent("Package.swift"), atomically: true, encoding: .utf8)
+        try """
+        public enum Greeter {
+            public static let message = "Hello from Local AI"
+        }
+        """.write(to: root.appendingPathComponent("Sources/Demo/Greeter.swift"), atomically: true, encoding: .utf8)
+        try """
+        import XCTest
+        @testable import Demo
+
+        final class GreeterTests: XCTestCase {
+            func testGreeting() {
+                XCTAssertEqual(Greeter.message, "Hello from Local AI")
+            }
+        }
+        """.write(to: root.appendingPathComponent("Tests/DemoTests/GreeterTests.swift"), atomically: true, encoding: .utf8)
+        return workspace
     }
 }
 
@@ -446,6 +917,12 @@ private actor SpyVerificationRunner: VerificationRunning {
 private func planJSON(requestID: UUID) -> String {
     """
     {"protocolVersion":1,"type":"plan","requestID":"\(requestID.uuidString)","payload":{"summary":"Update greeting and run tests.","actions":[{"id":"write-1","kind":"writeFile","relativePath":"Sources/Demo/Greeter.swift","description":"Replace greeting."},{"id":"verify-1","kind":"verify","commandID":"swift-test","description":"Run Swift tests."}]}}
+    """
+}
+
+private func planJSON(requestID: UUID, actions: String) -> String {
+    """
+    {"protocolVersion":1,"type":"plan","requestID":"\(requestID.uuidString)","payload":{"summary":"Prompt test plan.","actions":[\(actions)]}}
     """
 }
 

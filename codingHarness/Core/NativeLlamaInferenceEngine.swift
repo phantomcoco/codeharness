@@ -65,7 +65,16 @@ actor NativeLlamaInferenceEngine: InferenceEngine {
         modelParams.n_gpu_layers = configuration.gpuLayerCount
         #endif
 
-        guard let loadedModel = configuration.canonicalPath.withCString({ llama_model_load_from_file($0, modelParams) }) else {
+        var effectiveGPULayerCount = modelParams.n_gpu_layers
+        var loadedModel = configuration.canonicalPath.withCString { llama_model_load_from_file($0, modelParams) }
+        if loadedModel == nil, modelParams.n_gpu_layers > 0 {
+            HarnessTrace.log("nativeLlama.loadModel.retryCPU after gpuLayers=\(modelParams.n_gpu_layers)")
+            modelParams.n_gpu_layers = 0
+            effectiveGPULayerCount = 0
+            loadedModel = configuration.canonicalPath.withCString { llama_model_load_from_file($0, modelParams) }
+        }
+
+        guard let loadedModel else {
             inferenceState = .failed(LlamaInferenceError.modelLoadFailed.description)
             HarnessTrace.log("nativeLlama.loadModel.failed reason=modelLoad")
             throw LlamaInferenceError.modelLoadFailed
@@ -76,7 +85,7 @@ actor NativeLlamaInferenceEngine: InferenceEngine {
         contextParams.n_batch = configuration.contextSize
         contextParams.n_threads = configuration.threadCount
         contextParams.n_threads_batch = configuration.batchThreadCount
-        contextParams.offload_kqv = configuration.gpuLayerCount > 0
+        contextParams.offload_kqv = effectiveGPULayerCount > 0
 
         guard let loadedContext = llama_init_from_model(loadedModel, contextParams) else {
             llama_model_free(loadedModel)
@@ -100,14 +109,14 @@ actor NativeLlamaInferenceEngine: InferenceEngine {
         context = loadedContext
         vocab = loadedVocab
         sampler = chain
-        let backend = configuration.gpuLayerCount > 0 ? "Metal requested via GGML_USE_METAL + n_gpu_layers=\(configuration.gpuLayerCount)" : "CPU"
+        let backend = effectiveGPULayerCount > 0 ? "Metal requested via GGML_USE_METAL + n_gpu_layers=\(effectiveGPULayerCount)" : "CPU"
         let metadata = ModelMetadata(
             identifier: configuration.identifier,
             description: modelDescription(loadedModel),
             contextSize: llama_n_ctx(loadedContext),
             threadCount: configuration.threadCount,
             batchThreadCount: configuration.batchThreadCount,
-            gpuLayerCount: configuration.gpuLayerCount,
+            gpuLayerCount: effectiveGPULayerCount,
             backendDescription: backend,
             loadDuration: Date().timeIntervalSince(started),
             sizeBytes: llama_model_size(loadedModel),
@@ -115,7 +124,7 @@ actor NativeLlamaInferenceEngine: InferenceEngine {
         )
         loadedMetadata = metadata
         inferenceState = .loaded(metadata)
-        HarnessTrace.log("nativeLlama.loadModel.done threads=\(configuration.threadCount) gpuLayers=\(configuration.gpuLayerCount)")
+        HarnessTrace.log("nativeLlama.loadModel.done threads=\(configuration.threadCount) gpuLayers=\(effectiveGPULayerCount)")
     }
 
     nonisolated func generate(request: InferenceRequest) -> AsyncThrowingStream<InferenceEvent, Error> {

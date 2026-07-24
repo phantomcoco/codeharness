@@ -1,0 +1,12 @@
+.build/
+
+FixtureWorkspace/*
+!FixtureWorkspace/.gitkeep
+
+*.gguf
+Models/
+.models/
+
+# Xcode user state
+xcuserdata/
+*.xcuserstate

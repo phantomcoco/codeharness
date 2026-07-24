@@ -24,6 +24,7 @@ final class MainViewModel: ObservableObject {
 
     private let controller: CodingHarnessController
     private let validator = WorkspaceSecurityValidator()
+    private let defaultModelFileName = "gemma-3-1b-it-Q4_K_M.gguf"
 
     init(container: AppContainer = .production()) {
         controller = container.controller
@@ -77,6 +78,19 @@ final class MainViewModel: ObservableObject {
         }
     }
 
+    func loadDefaultWorkspace() {
+        HarnessTrace.log("ui.loadDefaultWorkspace.clicked")
+        Task {
+            do {
+                let workspace = try validator.canonicalWorkspace(from: defaultWorkspaceURL())
+                await controller.selectWorkspace(workspace)
+                await refresh()
+            } catch {
+                await setError(error)
+            }
+        }
+    }
+
     func selectModel() {
         HarnessTrace.log("ui.selectModel.clicked")
         let panel = NSOpenPanel()
@@ -87,9 +101,20 @@ final class MainViewModel: ObservableObject {
         guard panel.runModal() == .OK, let url = panel.url else { return }
         Task {
             do {
-                let canonical = url.standardizedFileURL.resolvingSymlinksInPath()
-                let values = try canonical.resourceValues(forKeys: [.fileSizeKey])
-                let model = ModelConfiguration(url: url, canonicalPath: canonical.path, fileSizeBytes: Int64(values.fileSize ?? 0))
+                let model = try modelConfiguration(from: url)
+                await controller.selectModel(model)
+                await refresh()
+            } catch {
+                await setError(error)
+            }
+        }
+    }
+
+    func loadDefaultModel() {
+        HarnessTrace.log("ui.loadDefaultModel.clicked")
+        Task {
+            do {
+                let model = try modelConfiguration(from: defaultModelURL())
                 await controller.selectModel(model)
                 await refresh()
             } catch {
@@ -272,6 +297,52 @@ final class MainViewModel: ObservableObject {
         await refresh()
     }
 
+    private func defaultWorkspaceURL() throws -> URL {
+        let root = try projectRootURL()
+        let url = root.appendingPathComponent("FixtureWorkspace", isDirectory: true)
+        guard FileManager.default.fileExists(atPath: url.path) else {
+            throw AppFailure.invalidPath("Default workspace not found: \(url.path)")
+        }
+        return url
+    }
+
+    private func defaultModelURL() throws -> URL {
+        let root = try projectRootURL()
+        let url = root
+            .appendingPathComponent("Models", isDirectory: true)
+            .appendingPathComponent(defaultModelFileName, isDirectory: false)
+        guard FileManager.default.fileExists(atPath: url.path) else {
+            throw AppFailure.invalidPath("Default model not found: \(url.path)")
+        }
+        return url
+    }
+
+    private func projectRootURL() throws -> URL {
+        var sourceURL = URL(fileURLWithPath: #filePath)
+        sourceURL.deleteLastPathComponent()
+        sourceURL.deleteLastPathComponent()
+        if FileManager.default.fileExists(atPath: sourceURL.appendingPathComponent("FixtureWorkspace", isDirectory: true).path),
+           FileManager.default.fileExists(atPath: sourceURL.appendingPathComponent("codingHarness.xcodeproj", isDirectory: true).path) {
+            return sourceURL
+        }
+
+        var url = Bundle.main.bundleURL
+        while url.path != "/" {
+            if FileManager.default.fileExists(atPath: url.appendingPathComponent("FixtureWorkspace", isDirectory: true).path),
+               FileManager.default.fileExists(atPath: url.appendingPathComponent("codingHarness.xcodeproj", isDirectory: true).path) {
+                return url
+            }
+            url.deleteLastPathComponent()
+        }
+        throw AppFailure.invalidPath("Project root not found from app bundle.")
+    }
+
+    private func modelConfiguration(from url: URL) throws -> ModelConfiguration {
+        let canonical = url.standardizedFileURL.resolvingSymlinksInPath()
+        let values = try canonical.resourceValues(forKeys: [.fileSizeKey])
+        return ModelConfiguration(url: url, canonicalPath: canonical.path, fileSizeBytes: Int64(values.fileSize ?? 0))
+    }
+
     private func format(inferenceState: InferenceState) -> String {
         switch inferenceState {
         case .unloaded:
@@ -323,13 +394,19 @@ struct ContentView: View {
                 Text("Local AI Coding Harness")
                     .font(.title2.bold())
                 SectionHeader("Workspace")
-                Button("Select Workspace", action: viewModel.selectWorkspace)
+                HStack {
+                    Button("Select Workspace", action: viewModel.selectWorkspace)
+                    Button("Load Default", action: viewModel.loadDefaultWorkspace)
+                }
                 Text(viewModel.workspacePath)
                     .font(.caption)
                     .textSelection(.enabled)
 
                 SectionHeader("Model")
-                Button("Select GGUF Model", action: viewModel.selectModel)
+                HStack {
+                    Button("Select GGUF Model", action: viewModel.selectModel)
+                    Button("Load Default", action: viewModel.loadDefaultModel)
+                }
                 Text(viewModel.modelPath)
                     .font(.caption)
                     .textSelection(.enabled)
