@@ -1,6 +1,6 @@
 # Local AI Coding Harness
 
-Native macOS app for a host-owned `Plan -> Approval -> Execute` coding workflow. User selects a workspace, selects a local `.gguf` Gemma-compatible model, optionally supplies `soul.md`, generates a structured plan, approves the exact displayed plan, then executes at most one file replacement and one verification command.
+Native macOS app for a host-owned `Plan -> Approval -> Execute` coding workflow. User selects a workspace, selects a local `.gguf` Gemma-compatible model, optionally supplies `soul.md`, generates a structured plan, approves the exact displayed plan, then executes a bounded plan of validated file replacement actions and one verification command.
 
 ## Requirements
 
@@ -126,7 +126,7 @@ Select a `.gguf` file, inspect canonical path, size, context size, output-token 
 - Changing workspace, model, task, guidance, or plan invalidates approval
 - Model paths are untrusted
 - Rejects absolute paths, Windows paths, `..`, null bytes, `~`, file URLs, and symlink escapes
-- Writes are bounded to 1 MB and atomically replace complete files
+- Writes are bounded to a narrow approved plan, capped at two file replacements for the fixture workflow, limited to 1 MB each, and atomically replace complete files
 - Only command ID `swift-test` is allowed, mapped by host to `/usr/bin/swift test`
 - No shell, no pipes, no model-provided executable or arguments
 - Verification output is bounded to 50 KB, timeout is 60 seconds
@@ -151,14 +151,14 @@ The fixture test intentionally fails before approved execution and passes after 
 Run the harness unit tests from the repository root:
 
 ```sh
-cd /Users/swaraj/Desktop/Swaraj/Personal/codingHarness
+cd codeharness
 swift test
 ```
 
 Run the demo fixture only after the app has executed the sample plan against `FixtureWorkspace`:
 
 ```sh
-cd /Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace
+cd codeharness/FixtureWorkspace
 swift test
 ```
 
@@ -213,7 +213,7 @@ The smoke test only runs inference. It does not write files, run commands, appro
 
 ## App Sandbox
 
-App Sandbox is enabled. User-selected file access is configured as read/write so the app can modify files inside a workspace chosen through the macOS folder picker. The user must select the workspace in the app; model-generated paths are still validated by the host before any write.
+App Sandbox is disabled for this prototype so the native app can load a user-selected local GGUF and operate on the selected workspace without a separate model service. The security boundary is the host-owned controller: the user selects the workspace, model-generated paths are canonicalized and validated before any write, and model text is never passed to a shell.
 
 ## Known Limitations
 

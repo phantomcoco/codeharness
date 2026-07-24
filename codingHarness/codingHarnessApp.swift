@@ -2,7 +2,7 @@
 //  codingHarnessApp.swift
 //  codingHarness
 //
-//  Created by Swarajmeet Singh on 24/07/26.
+//  Created for Local AI Coding Harness on 24/07/26.
 //
 
 import SwiftUI
