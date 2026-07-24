@@ -3,32 +3,32 @@
 import PackageDescription
 
 let package = Package(
-    name: "LocalAICodingHarness",
+    name: "PlanGate",
     platforms: [.macOS(.v14)],
     products: [
-        .library(name: "LocalAICodingHarnessCore", targets: ["LocalAICodingHarnessCore"])
+        .library(name: "PlanGateCore", targets: ["PlanGateCore"])
     ],
     dependencies: [
         .package(path: "Packages/LlamaBinary")
     ],
     targets: [
         .target(
-            name: "LocalAICodingHarnessCore",
+            name: "PlanGateCore",
             dependencies: [
                 .product(name: "LlamaBinary", package: "LlamaBinary")
             ],
-            path: "codingHarness",
+            path: "PlanGate",
             exclude: [
-                "codingHarnessApp.swift",
+                "PlanGateApp.swift",
                 "Presentation",
                 "Assets.xcassets",
                 "Resources"
             ]
         ),
         .testTarget(
-            name: "LocalAICodingHarnessCoreTests",
-            dependencies: ["LocalAICodingHarnessCore"],
-            path: "codingHarnessTests"
+            name: "PlanGateCoreTests",
+            dependencies: ["PlanGateCore"],
+            path: "PlanGateTests"
         )
     ]
 )

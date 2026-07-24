@@ -1,4 +1,4 @@
-# Local AI Coding Harness
+# PlanGate
 
 Native macOS app for a host-owned `Plan -> Approval -> Execute` coding workflow. User selects a workspace, selects a local `.gguf` Gemma-compatible model, optionally supplies `soul.md`, generates a structured plan, approves the exact displayed plan, then executes a bounded plan of validated file replacement actions and one verification command.
 
@@ -11,22 +11,22 @@ Native macOS app for a host-owned `Plan -> Approval -> Execute` coding workflow.
 
 ## Architecture
 
-Code is split by responsibility in `codingHarness/Core/HarnessCore.swift` and presentation in `codingHarness/ContentView.swift`.
+Code is split by responsibility under `PlanGate/Core`, `PlanGate/Models`, `PlanGate/Presentation`, and `PlanGate/Shared`.
 
 - Presentation: SwiftUI `ContentView` and `MainViewModel`
-- Application: `CodingHarnessController`, `AppContainer`, `HarnessStateMachine`
+- Application: `PlanGateController`, `AppContainer`, `PlanGateStateMachine`
 - Domain: state, plans, actions, approval records, activity, errors, protocol envelopes
 - Infrastructure: workspace inspector, path validator, file writer, command runner, fake and llama inference engines
 
-MVVM-C is represented by `MainViewModel` sending user intents into `CodingHarnessController`; views render only state. Dependencies are protocol-based: `InferenceEngine`, `WorkspaceInspecting`, `FileWriting`, `VerificationRunning`, and `Clock`.
+MVVM-C is represented by `MainViewModel` sending user intents into `PlanGateController`; views render only state. Dependencies are protocol-based: `InferenceEngine`, `WorkspaceInspecting`, `FileWriting`, `VerificationRunning`, and `Clock`.
 
 ## State Machine
 
-`HarnessState` is a strongly typed enum:
+`PlanGateState` is a strongly typed enum:
 
 `idle -> planning -> awaitingApproval -> executing -> completed | failed | cancelled`
 
-`HarnessStateMachine` rejects invalid transitions. `awaitingApproval -> executing` requires an approval record matching the current plan fingerprint.
+`PlanGateStateMachine` rejects invalid transitions. `awaitingApproval -> executing` requires an approval record matching the current plan fingerprint.
 
 ## llama.cpp Integration
 
@@ -172,7 +172,7 @@ The fixture test intentionally fails before approved execution and passes after 
 
 ## Quick Local Test
 
-Run the harness unit tests from the repository root:
+Run the PlanGate unit tests from the repository root:
 
 ```sh
 cd codeharness
@@ -190,7 +190,7 @@ If you selected another folder, the app writes there instead. The output path is
 
 ## Run
 
-Open `codingHarness.xcodeproj`, confirm local package `Packages/LlamaBinary` is resolved, confirm product `LlamaBinary` is linked to the `codingHarness` macOS target, then run scheme `codingHarness`.
+Open `PlanGate.xcodeproj`, confirm local package `Packages/LlamaBinary` is resolved, confirm product `LlamaBinary` is linked to the `PlanGate` macOS target, then run scheme `PlanGate`.
 
 Run deterministic tests:
 
@@ -201,7 +201,7 @@ swift test
 Build app:
 
 ```sh
-xcodebuild -project codingHarness.xcodeproj -scheme codingHarness -destination 'platform=macOS' build
+xcodebuild -project PlanGate.xcodeproj -scheme PlanGate -destination 'platform=macOS' build
 ```
 
 ## Manual Native Smoke Test

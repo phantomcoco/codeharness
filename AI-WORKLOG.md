@@ -8,5 +8,5 @@
 - Real Gemma model load probe passed with a local `gemma-3-1b-it-Q4_K_M.gguf`: llama.cpp reported `gemma3 1B Q4_K - Medium`, SPM vocab, Metal on Apple Silicon, and successful 4096-token context creation. Deterministic tests still use fake inference and load no weights.
 - Added robust structured JSON extraction for model replies that include prose or fenced JSON, and semantic smoke parsing for fenced JSON output.
 - App Sandbox is disabled for this prototype; path, approval, and command safety are enforced by host-owned controller validation.
-- Final verification passed with `swift test` and `xcodebuild -project codingHarness.xcodeproj -scheme codingHarness -destination 'platform=macOS' build`.
+- Final verification passed with `swift test` and `xcodebuild -project PlanGate.xcodeproj -scheme PlanGate -destination 'platform=macOS' build`.
 - Approximate time spent: 2.5 hours.
