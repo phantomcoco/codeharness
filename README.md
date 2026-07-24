@@ -113,11 +113,35 @@ Recommended file:
 
 `gemma-3-1b-it-Q4_K_M.gguf`
 
-The model is not bundled. Download the GGUF separately, then select it through the app. Tests never load model weights. Other compatible Gemma GGUF variants may be selected. The application does not use a local server, HTTP inference, Ollama, LM Studio, Jan, LocalAI, Python bindings, or llama CLI subprocesses.
+The model is not bundled. Download the GGUF separately, then either select it through the app or place it at the default model path:
+
+`codeharness/Models/gemma-3-1b-it-Q4_K_M.gguf`
+
+Create the default model folder if needed:
+
+```sh
+mkdir -p codeharness/Models
+```
+
+The `Models` folder and `.gguf` files are intentionally ignored by git. Tests never load model weights. Other compatible Gemma GGUF variants may be selected. The application does not use a local server, HTTP inference, Ollama, LM Studio, Jan, LocalAI, Python bindings, or llama CLI subprocesses.
+
+## Default Paths
+
+The app has **Load Default** buttons for quick local demos.
+
+Default workspace:
+
+`codeharness/FixtureWorkspace`
+
+Default model:
+
+`codeharness/Models/gemma-3-1b-it-Q4_K_M.gguf`
+
+If the default model file is missing, download `gemma-3-1b-it-Q4_K_M.gguf` from the GGUF repository above and place it in `codeharness/Models/`. If the default workspace is missing, keep or restore the fixture folder at `codeharness/FixtureWorkspace`.
 
 ## Model Flow
 
-Select a `.gguf` file, inspect canonical path, size, context size, output-token cap, thread count, and GPU-layer request, then press Load. The model is owned by the native actor. `llama.cpp` verifies the file during load; extension alone is not treated as proof. Tests use `FakeInferenceEngine` and never load weights.
+Select a `.gguf` file, or click **Load Default** after placing the reference model at `codeharness/Models/gemma-3-1b-it-Q4_K_M.gguf`. The app inspects canonical path, size, context size, output-token cap, thread count, and GPU-layer request, then press Load. The model is owned by the native actor. `llama.cpp` verifies the file during load; extension alone is not treated as proof. Tests use `FakeInferenceEngine` and never load weights.
 
 ## Safety
 
@@ -224,4 +248,4 @@ App Sandbox is disabled for this prototype so the native app can load a user-sel
 
 ## Implementation Time
 
-Approximate actual implementation time: one focused Codex session.
+Approximate actual implementation time: 2.5 hours.

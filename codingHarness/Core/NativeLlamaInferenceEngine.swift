@@ -2,29 +2,6 @@
 import Foundation
 import llama
 
-private final class LlamaCancellationBox: @unchecked Sendable {
-    private let lock = NSLock()
-    private var value = false
-
-    func reset() {
-        lock.lock()
-        value = false
-        lock.unlock()
-    }
-
-    func cancel() {
-        lock.lock()
-        value = true
-        lock.unlock()
-    }
-
-    var isCancelled: Bool {
-        lock.lock()
-        defer { lock.unlock() }
-        return value
-    }
-}
-
 actor NativeLlamaInferenceEngine: InferenceEngine {
     private var inferenceState: InferenceState = .unloaded
     private var model: OpaquePointer?

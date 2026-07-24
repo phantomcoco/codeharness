@@ -9,4 +9,4 @@
 - Added robust structured JSON extraction for model replies that include prose or fenced JSON, and semantic smoke parsing for fenced JSON output.
 - App Sandbox is disabled for this prototype; path, approval, and command safety are enforced by host-owned controller validation.
 - Final verification passed with `swift test` and `xcodebuild -project codingHarness.xcodeproj -scheme codingHarness -destination 'platform=macOS' build`.
-- Approximate time spent: one focused implementation session.
+- Approximate time spent: 2.5 hours.

@@ -20,7 +20,7 @@ let package = Package(
             path: "codingHarness",
             exclude: [
                 "codingHarnessApp.swift",
-                "ContentView.swift",
+                "Presentation",
                 "Assets.xcassets",
                 "Resources"
             ]
