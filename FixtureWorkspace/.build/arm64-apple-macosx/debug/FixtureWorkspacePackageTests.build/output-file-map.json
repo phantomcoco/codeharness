@@ -1,0 +1,12 @@
+{
+  "": {
+    "swift-dependencies": "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build/master.swiftdeps"
+  },
+  "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.derived/runner.swift": {
+    "dependencies": "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build/runner.d",
+    "object": "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build/runner.swift.o",
+    "swiftmodule": "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build/runner~partial.swiftmodule",
+    "swift-dependencies": "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build/runner.swiftdeps",
+    "diagnostics": "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build/runner.dia"
+  }
+}

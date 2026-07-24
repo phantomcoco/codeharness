@@ -1,0 +1,644 @@
+{
+  "builtTestProducts" : [
+    {
+      "binaryPath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.xctest/Contents/MacOS/FixtureWorkspacePackageTests",
+      "packagePath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace",
+      "productName" : "FixtureWorkspacePackageTests"
+    }
+  ],
+  "copyCommands" : {
+
+  },
+  "explicitTargetDependencyImportCheckingMode" : {
+    "none" : {
+
+    }
+  },
+  "generatedSourceTargetSet" : [
+
+  ],
+  "pluginDescriptions" : [
+
+  ],
+  "swiftCommands" : {
+    "C.Demo-arm64-apple-macosx26.0-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Demo.build/sources",
+      "importPath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/Sources/Demo/Greeter.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Demo.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "Demo",
+      "moduleOutputPath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Modules/Demo.swiftmodule",
+      "objects" : [
+        "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Demo.build/Greeter.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx10.13",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j8",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Demo.build/include/Demo-Swift.h",
+        "-color-diagnostics",
+        "-swift-version",
+        "5",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "fixtureworkspace"
+      ],
+      "outputFileMapPath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Demo.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Demo.build/Greeter.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Modules/Demo.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/Sources/Demo/Greeter.swift"
+      ],
+      "tempsPath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Demo.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.DemoTests-arm64-apple-macosx26.0-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/DemoTests.build/sources",
+      "importPath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/Tests/DemoTests/GreeterTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Modules/Demo.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/DemoTests.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "DemoTests",
+      "moduleOutputPath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Modules/DemoTests.swiftmodule",
+      "objects" : [
+        "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/DemoTests.build/GreeterTests.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-Xfrontend",
+        "-enable-cross-import-overlays",
+        "-j8",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-color-diagnostics",
+        "-swift-version",
+        "5",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "fixtureworkspace"
+      ],
+      "outputFileMapPath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/DemoTests.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/DemoTests.build/GreeterTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Modules/DemoTests.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/Tests/DemoTests/GreeterTests.swift"
+      ],
+      "tempsPath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/DemoTests.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.FixtureWorkspacePackageTests-arm64-apple-macosx26.0-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build/sources",
+      "importPath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.derived/runner.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Modules/DemoTests.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "FixtureWorkspacePackageTests",
+      "moduleOutputPath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Modules/FixtureWorkspacePackageTests.swiftmodule",
+      "objects" : [
+        "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build/runner.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx10.13",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-Xfrontend",
+        "-enable-cross-import-overlays",
+        "-j8",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build/include/FixtureWorkspacePackageTests-Swift.h",
+        "-color-diagnostics",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "fixtureworkspace"
+      ],
+      "outputFileMapPath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build/runner.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Modules/FixtureWorkspacePackageTests.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.derived/runner.swift"
+      ],
+      "tempsPath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build",
+      "wholeModuleOptimization" : false
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "swiftTargetScanArgs" : {
+    "Demo" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "Demo",
+      "-package-name",
+      "fixtureworkspace",
+      "-c",
+      "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/Sources/Demo/Greeter.swift",
+      "-I",
+      "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx10.13",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j8",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Demo.build/include/Demo-Swift.h",
+      "-color-diagnostics",
+      "-swift-version",
+      "5",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "fixtureworkspace",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ],
+    "DemoTests" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "DemoTests",
+      "-package-name",
+      "fixtureworkspace",
+      "-c",
+      "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/Tests/DemoTests/GreeterTests.swift",
+      "-I",
+      "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx14.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-Xfrontend",
+      "-enable-cross-import-overlays",
+      "-j8",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-color-diagnostics",
+      "-swift-version",
+      "5",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "fixtureworkspace",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ],
+    "FixtureWorkspacePackageTests" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "FixtureWorkspacePackageTests",
+      "-package-name",
+      "fixtureworkspace",
+      "-c",
+      "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.derived/runner.swift",
+      "-I",
+      "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx10.13",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-Xfrontend",
+      "-enable-cross-import-overlays",
+      "-j8",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build/include/FixtureWorkspacePackageTests-Swift.h",
+      "-color-diagnostics",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "fixtureworkspace",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ]
+  },
+  "targetDependencyMap" : {
+    "Demo" : [
+
+    ],
+    "DemoTests" : [
+      "Demo"
+    ],
+    "FixtureWorkspacePackageTests" : [
+      "DemoTests",
+      "Demo"
+    ]
+  },
+  "testDiscoveryCommands" : {
+
+  },
+  "testEntryPointCommands" : {
+    "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.derived/runner.swift" : {
+      "inputs" : [
+
+      ],
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.derived/runner.swift"
+        }
+      ]
+    }
+  },
+  "traitConfiguration" : {
+    "default" : {
+
+    }
+  },
+  "writeCommands" : {
+    "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Demo.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/Sources/Demo/Greeter.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Demo.build/sources"
+    },
+    "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/DemoTests.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/Tests/DemoTests/GreeterTests.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/DemoTests.build/sources"
+    },
+    "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.derived/runner.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build/sources"
+    },
+    "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.product/Objects.LinkFileList" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<link-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/Demo.build/Greeter.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/DemoTests.build/GreeterTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.build/runner.swift.o"
+        }
+      ],
+      "outputFilePath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/FixtureWorkspacePackageTests.product/Objects.LinkFileList"
+    },
+    "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt" : {
+      "alwaysOutOfDate" : true,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<swift-get-version>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+        }
+      ],
+      "outputFilePath" : "/Users/swaraj/Desktop/Swaraj/Personal/codingHarness/FixtureWorkspace/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+    }
+  }
+}
